@@ -1,7 +1,7 @@
 import {Box, Button, Container, Grid} from "@material-ui/core";
 import firebase from "firebase";
 import {useContext} from "react";
-import {Context} from "../index";
+import {Context} from "../../index";
 
 export const Login = () => {
     const {auth} = useContext(Context)

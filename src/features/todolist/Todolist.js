@@ -1,11 +1,11 @@
 import {Grid, Paper} from "@material-ui/core";
-import {Loading} from "./Loading";
+import {Loading} from "../../components/Loading";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {useContext} from "react";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import firebase from "firebase";
-import {AddItemForm} from "./AddItemForm";
-import {Task} from "./Task";
+import {AddItemForm} from "../../components/AddItemForm";
+import {Task} from "./task/Task";
 
 export const Todolist = () => {
     const {auth, firestore} = useContext(Context)

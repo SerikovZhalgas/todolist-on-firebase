@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Error404 from "./Error404";
-import {Login} from "./Login";
-import {Task} from "./Task";
-import {Todolist} from "./Todolist";
+import {Login} from "../features/login/Login";
+import {Task} from "../features/todolist/task/Task";
+import {Todolist} from "../features/todolist/Todolist";
 
 export const PATH = {
     MAIN: '/',

@@ -1,4 +1,4 @@
-import {EditableSpan} from "./EditableSpan";
+import {EditableSpan} from "../../../components/EditableSpan";
 import {Checkbox, IconButton} from "@material-ui/core";
 import {useContext, useState} from "react";
 import {Delete, Save} from '@mui/icons-material';
@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
 import Stack from '@mui/material/Stack';
 import {useAuthState} from "react-firebase-hooks/auth";
-import {Context} from "../index";
+import {Context} from "../../../index";
 import TextField from "@mui/material/TextField";
 
 export const Task = React.memo((props) => {
