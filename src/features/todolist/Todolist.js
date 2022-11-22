@@ -1,20 +1,39 @@
-import {Grid, Paper} from "@material-ui/core";
 import {Loading} from "../../components/Loading";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {useContext} from "react";
 import {useCollectionData} from "react-firebase-hooks/firestore";
-import firebase from "firebase";
 import {AddItemForm} from "../../components/AddItemForm";
 import {Task} from "./task/Task";
+import {Context} from "../../index";
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import {PATH} from "../../components/AppRouter";
+import {useNavigate} from "react-router-dom";
 
 export const Todolist = () => {
-    const {auth, firestore} = useContext(Context)
+    const navigate = useNavigate()
+    const {auth, db} = useContext(Context)
     const [user] = useAuthState(auth)
     const [tasks, loading] = useCollectionData(
-        firestore.collection('task').orderBy('createdAt')
+        db.collection('tasks').orderBy('createdAt')
     )
 
     const addTask = async (title) => {
+        db.collection("tasks").add({
+            taskId: "1",
+            title,
+            description: "",
+            dateEnd: "",
+            files: ""
+        })
+            .then((docRef) => {
+                console.log("Document written with ID: ", docRef.id);
+            })
+            .catch((error) => {
+                console.error("Error adding document: ", error);
+            });
+    }
+    /*const addTask = async (title) => {
         firestore.collection('task').add({
             uid: user.uid,
             title,
@@ -23,9 +42,9 @@ export const Todolist = () => {
             file: '',
             date: firebase.firestore.FieldValue.serverTimestamp()
         })
-    }
+    }*/
     const deleteTask = async (taskId) => {
-        firestore.collection('task').add({
+        db.collection('task').add({
             uid: user.uid,
             taskId
         })
@@ -33,6 +52,10 @@ export const Todolist = () => {
 
     if (loading) {
         return <Loading/>
+    }
+
+    if (user==null) {
+        navigate(PATH.LOGIN)
     }
 
     return (
@@ -52,7 +75,7 @@ export const Todolist = () => {
                                     status={t.status}
                                     file={t.file}
                                     date={t.date}
-                                    removeTask={removeTask}
+                                    removeTask={deleteTask}
                                 />
                             </Paper>
                         </Grid>)

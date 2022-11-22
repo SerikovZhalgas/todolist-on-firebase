@@ -1,9 +1,12 @@
 import React, {useContext} from 'react';
 import {NavLink} from 'react-router-dom';
 import {useAuthState} from "react-firebase-hooks/auth";
-import {AppBar, Button, Grid, Toolbar} from "@material-ui/core";
 import {Context} from "../index";
-import {PATH} from "./Router";
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import {PATH} from "./AppRouter";
 
 export const Navbar = () => {
     const {auth} = useContext(Context)

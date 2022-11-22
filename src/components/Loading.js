@@ -1,4 +1,5 @@
-import {Container, Grid} from "@material-ui/core";
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 export const Loading = () => {
     return (

@@ -1,22 +1,24 @@
 import {EditableSpan} from "../../../components/EditableSpan";
-import {Checkbox, IconButton} from "@material-ui/core";
-import {useContext, useState} from "react";
-import {Delete, Save} from '@mui/icons-material';
+import {memo, useContext, useState} from "react";
 import dayjs from 'dayjs';
-import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
-import Stack from '@mui/material/Stack';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {Context} from "../../../index";
-import TextField from "@mui/material/TextField";
+import IconButton from '@mui/material/IconButton';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Checkbox from '@mui/material/Checkbox';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import { DesktopDatePicker } from '@mui/x-date-pickers';
 
-export const Task = React.memo((props) => {
+export const Task = memo((props) => {
     const {auth, firestore} = useContext(Context)
     const [user] = useAuthState(auth)
     const [title, setTitle] = useState(props.title)
     const [description, setDescription] = useState(props.description)
     const [status, setStatus] = useState(props.status)
     const [file, setFile] = useState(props.file)
-    const [date, setDate] = React.useState(dayjs(props.date))
+    const [date, setDate] = useState(dayjs(props.date))
 
     const updateTask = async () => {
         firestore.collection('task').add({
@@ -47,14 +49,14 @@ export const Task = React.memo((props) => {
 
             <EditableSpan value={title} onChange={titleChangeHandler}/>
             <IconButton onClick={deleteClickHandler}>
-                <Delete/>
+                <DeleteIcon/>
             </IconButton>
         </div>
         <div>
             <EditableSpan value={description} onChange={descriptionChangeHandler}/>
         </div>
         <div>
-            <Input />
+            <input/>
         </div>
         <div>
             <Stack spacing={3}>
@@ -68,7 +70,7 @@ export const Task = React.memo((props) => {
             </Stack>
         </div>
         <IconButton onClick={updateTask}>
-            <Save/>
+            <SaveIcon/>
         </IconButton>
     </div>
 })

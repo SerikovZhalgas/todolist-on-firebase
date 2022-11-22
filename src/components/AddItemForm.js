@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import TextField from '@mui/material/TextField';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import IconButton from '@mui/material/IconButton';
-import {AddBox} from '@mui/icons-material';
 
 export const AddItemForm = React.memo(function ({addItem, disabled = false}) {
     let [title, setTitle] = useState('')
@@ -40,7 +40,7 @@ export const AddItemForm = React.memo(function ({addItem, disabled = false}) {
                    helperText={error}
         />
         <IconButton color="primary" onClick={addItemHandler} disabled={disabled}>
-            <AddBox/>
+            <AddBoxIcon/>
         </IconButton>
     </div>
 })
