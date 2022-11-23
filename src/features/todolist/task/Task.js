@@ -1,43 +1,51 @@
 import {EditableSpan} from "../../../components/EditableSpan";
 import {memo, useContext, useState} from "react";
-import dayjs from 'dayjs';
-import {useAuthState} from "react-firebase-hooks/auth";
 import {Context} from "../../../index";
 import IconButton from '@mui/material/IconButton';
-import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Checkbox from '@mui/material/Checkbox';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import { DesktopDatePicker } from '@mui/x-date-pickers';
+import dayjs from "dayjs";
 
 export const Task = memo((props) => {
-    const {auth, firestore} = useContext(Context)
-    const [user] = useAuthState(auth)
+    const {auth, db} = useContext(Context)
     const [title, setTitle] = useState(props.title)
     const [description, setDescription] = useState(props.description)
     const [status, setStatus] = useState(props.status)
     const [file, setFile] = useState(props.file)
-    const [date, setDate] = useState(dayjs(props.date))
+    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd.nanoseconds))
 
-    const updateTask = async () => {
-        firestore.collection('task').add({
-            uid: user.uid,
-            taskId: props.taskId,
-            title,
-            description,
-            status,
-            file,
-            date,
-        })
-    }
-
+    console.log(dateEnd)
     const deleteClickHandler = () => props.removeTask(props.task.uid)
-    const titleChangeHandler = (newTitle) => setTitle(newTitle)
-    const descriptionChangeHandler = (newDescription) => setDescription(newDescription)
-    const statusChangeHandler = (e) => setStatus(e.currentTarget.checked)
-    const addFileChangeHandler = (newFile) => setFile(newFile)
-    const dateChangeHandler = (newDate) => setDate(newDate);
+    const titleChangeHandler = (newTitle) => {
+        db.doc(`todolists/${props.id}`).update({
+            title: newTitle
+        })
+        setTitle(newTitle)
+    }
+    const descriptionChangeHandler = (newDescription) => {
+        db.doc(`todolists/${props.id}`).update({
+            description: newDescription
+        })
+        setDescription(newDescription)
+    }
+    const statusChangeHandler = (e) => {
+        db.collection(`todolists/${props.id}`).update({
+            status: e.currentTarget.checked
+        })
+        setStatus(e.currentTarget.checked)
+    }
+    const addFileChangeHandler = (newFile) => {
+        db.doc(`todolists/${props.id}`).update({
+            file: newFile
+        })
+        setFile(newFile)
+    }
+    const dateChangeHandler = (newDate) => {
+        db.doc(`todolists/${props.id}`).update({
+            dateEnd: newDate
+        })
+        setDateEnd(newDate);
+    }
 
     return <div key={props.taskId} className={status ? 'is-done' : ''}>
         <div>
@@ -59,18 +67,7 @@ export const Task = memo((props) => {
             <input/>
         </div>
         <div>
-            <Stack spacing={3}>
-                <DesktopDatePicker
-                    label="Date desktop"
-                    inputFormat="MM/DD/YYYY"
-                    value={date}
-                    onChange={dateChangeHandler}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-            </Stack>
+
         </div>
-        <IconButton onClick={updateTask}>
-            <SaveIcon/>
-        </IconButton>
     </div>
 })
