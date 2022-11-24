@@ -8,7 +8,7 @@ import {AppRouter} from "../components/AppRouter";
 
 export const App = () => {
     const {auth} = useContext(Context)
-    const [user, loading, error] = useAuthState(auth)
+    const [loading] = useAuthState(auth)
 
     if (loading) {
         return <Loading/>

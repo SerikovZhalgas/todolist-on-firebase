@@ -1,5 +1,5 @@
 import {EditableSpan} from "../../../components/EditableSpan";
-import {memo, useContext, useState} from "react";
+import {memo, useContext, useEffect, useState} from "react";
 import {Context} from "../../../index";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -7,23 +7,36 @@ import Checkbox from '@mui/material/Checkbox';
 import dayjs from "dayjs";
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {CloudUpload} from "@mui/icons-material";
+import {storageErrors} from "../../../utils/Errors";
 
 export const Task = memo((props) => {
-    const {auth, db} = useContext(Context)
+    const {db, storage} = useContext(Context)
+    const storageRef = storage.ref()
     const [title, setTitle] = useState(props.title)
     const [description, setDescription] = useState(props.description)
     const [status, setStatus] = useState(props.status)
-    const [file, setFile] = useState(props.file)
-    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd))
+    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd.nanoseconds))
+    const [fileUrl, setFileUrl] = useState('')
 
-    const deleteClickHandler = () => props.removeTask(props.task.uid)
+    useEffect(()=>{
+        storageRef.child(`files/${props.fileName}`).getDownloadURL()
+            .then((url) => {
+                setFileUrl(url)
+            })
+            .catch((error) => {
+                storageErrors(error)
+            });
+    },[])
+
+    const deleteClickHandler = () => props.removeTask(props.id)
     const titleChangeHandler = (newTitle) => {
         db.doc(`todolists/${props.id}`).update({
             title: newTitle
-        }).then(()=>{
+        }).then(() => {
             console.log("Doc did updated")
         })
         setTitle(newTitle)
@@ -40,17 +53,34 @@ export const Task = memo((props) => {
         })
         setStatus(e.currentTarget.checked)
     }
-    const addFileChangeHandler = (newFile) => {
-        db.doc(`todolists/${props.id}`).update({
-            file: newFile
-        })
-        setFile(newFile)
-    }
-    const dateChangeHandler = (newDate) => {
+    const dateChangeHandler = (e) => {
+        debugger
+        console.log(e)
+        const newDate = e
         db.doc(`todolists/${props.id}`).update({
             dateEnd: newDate
         })
         setDateEnd(newDate);
+    }
+    const uploadHandler = (e) => {
+        if (e.target.files && e.target.files.length) {
+            const file = e.target.files[0]
+            console.log('file: ', file)
+            const newFileRef = storageRef.child(`files/${file.name}`)
+            newFileRef.putString(file).then(() => {
+                console.log('Uploaded!');
+            });
+            db.doc(`todolists/${props.id}`).update({
+                fileName: file.name
+            })
+            storageRef.child(`files/${file.name}`).getDownloadURL()
+                .then((url) => {
+                    setFileUrl(url)
+                })
+                .catch((error) => {
+                    storageErrors(error)
+                });
+        }
     }
 
     return <div key={props.taskId} className={status ? 'is-done' : ''}>
@@ -70,8 +100,18 @@ export const Task = memo((props) => {
             <EditableSpan value={description} onChange={descriptionChangeHandler}/>
         </div>
         <div>
-            <input/>
+            <a href={fileUrl}>Скачать на файл</a>
         </div>
+        <label>
+            <input
+                type="file"
+                onChange={uploadHandler}
+                style={{display: 'none'}}
+            />
+            <IconButton component='span'>
+                <CloudUpload/>
+            </IconButton>
+        </label>
         <div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Stack spacing={3}>

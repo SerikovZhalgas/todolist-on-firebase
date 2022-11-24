@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import './index.css';
 import 'firebase/firestore'
 import 'firebase/auth'
+import 'firebase/storage'
 import firebase from "firebase";
 import {App} from "./app/App";
 
@@ -21,12 +22,14 @@ export const Context = createContext(null)
 
 const auth = firebase.auth()
 const db = firebase.firestore()
+const storage = firebase.storage()
 
 const rootElement = document.getElementById('root');
 render(<Context.Provider value={{
     firebase,
     auth,
-    db
+    db,
+    storage
 }}>
     <App/>
 </Context.Provider>, rootElement);

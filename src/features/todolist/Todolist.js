@@ -30,15 +30,12 @@ export const Todolist = () => {
             description: "",
             status: false,
             dateEnd: "",
-            files: "",
+            fileName: '',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
     }
-    const deleteTask = async (taskId) => {
-        db.collection('task').add({
-            uid: user.uid,
-            taskId
-        })
+    const deleteTask = async (id) => {
+        db.doc(`todolists/${id}`).delete()
     }
 
     if (loading) {
@@ -66,7 +63,7 @@ export const Todolist = () => {
                                     title={t.title}
                                     description={t.description}
                                     status={t.status}
-                                    file={t.file}
+                                    fileName={t.fileName}
                                     dateEnd={t.dateEnd}
                                     removeTask={deleteTask}
                                 />
