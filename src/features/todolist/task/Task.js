@@ -5,6 +5,11 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Checkbox from '@mui/material/Checkbox';
 import dayjs from "dayjs";
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export const Task = memo((props) => {
     const {auth, db} = useContext(Context)
@@ -12,13 +17,14 @@ export const Task = memo((props) => {
     const [description, setDescription] = useState(props.description)
     const [status, setStatus] = useState(props.status)
     const [file, setFile] = useState(props.file)
-    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd.nanoseconds))
+    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd))
 
-    console.log(dateEnd)
     const deleteClickHandler = () => props.removeTask(props.task.uid)
     const titleChangeHandler = (newTitle) => {
         db.doc(`todolists/${props.id}`).update({
             title: newTitle
+        }).then(()=>{
+            console.log("Doc did updated")
         })
         setTitle(newTitle)
     }
@@ -29,7 +35,7 @@ export const Task = memo((props) => {
         setDescription(newDescription)
     }
     const statusChangeHandler = (e) => {
-        db.collection(`todolists/${props.id}`).update({
+        db.doc(`todolists/${props.id}`).update({
             status: e.currentTarget.checked
         })
         setStatus(e.currentTarget.checked)
@@ -67,7 +73,17 @@ export const Task = memo((props) => {
             <input/>
         </div>
         <div>
-
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Stack spacing={3}>
+                    <DesktopDatePicker
+                        label="Date desktop"
+                        inputFormat="MM/DD/YYYY"
+                        value={dateEnd}
+                        onChange={dateChangeHandler}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </Stack>
+            </LocalizationProvider>
         </div>
     </div>
 })

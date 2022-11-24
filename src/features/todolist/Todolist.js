@@ -22,13 +22,14 @@ export const Todolist = () => {
     )
     console.log(tasks)
     const addTask = async (title) => {
-        todolistsRef.add({
+        const taskId=v1();
+        todolistsRef.doc(taskId).set({
             userId: user.uid,
-            taskId: v1(),
+            taskId,
             title,
             description: "",
             status: false,
-            dateEnd: new Date(),
+            dateEnd: "",
             files: "",
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
@@ -55,8 +56,10 @@ export const Todolist = () => {
             </Grid>
             <Grid container spacing={3}>
                 {
-                    tasks.map(t =>
-                        <Grid item key={t.taskId}>
+                    tasks.map(t => {
+                        console.log(t)
+
+                        return <Grid item key={t.taskId}>
                             <Paper style={{padding: '10px'}}>
                                 <Task
                                     id={t.taskId}
@@ -68,7 +71,8 @@ export const Todolist = () => {
                                     removeTask={deleteTask}
                                 />
                             </Paper>
-                        </Grid>)
+                        </Grid>
+                    })
                 }
             </Grid>
         </>
