@@ -20,7 +20,7 @@ export const Todolist = () => {
     const [tasks, loading] = useCollectionData(
         todolistsRef.orderBy('createdAt')
     )
-    console.log(tasks)
+
     const addTask = async (title) => {
         const taskId=v1();
         todolistsRef.doc(taskId).set({

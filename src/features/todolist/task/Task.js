@@ -11,7 +11,7 @@ import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {DesktopDatePicker} from '@mui/x-date-pickers/DesktopDatePicker';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {CloudUpload} from "@mui/icons-material";
-import {storageErrors} from "../../../utils/Errors";
+import {isEmpty, storageErrors} from "../../../utils/functions";
 
 export const Task = memo((props) => {
     const {db, storage} = useContext(Context)
@@ -22,7 +22,7 @@ export const Task = memo((props) => {
     const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd.nanoseconds))
     const [fileUrl, setFileUrl] = useState('')
 
-    useEffect(()=>{
+    useEffect(() => {
         storageRef.child(`files/${props.fileName}`).getDownloadURL()
             .then((url) => {
                 setFileUrl(url)
@@ -30,7 +30,7 @@ export const Task = memo((props) => {
             .catch((error) => {
                 storageErrors(error)
             });
-    },[])
+    }, [props.fileName])
 
     const deleteClickHandler = () => props.removeTask(props.id)
     const titleChangeHandler = (newTitle) => {
@@ -54,13 +54,10 @@ export const Task = memo((props) => {
         setStatus(e.currentTarget.checked)
     }
     const dateChangeHandler = (e) => {
-        debugger
-        console.log(e)
-        const newDate = e
         db.doc(`todolists/${props.id}`).update({
-            dateEnd: newDate
+            dateEnd: e
         })
-        setDateEnd(newDate);
+        setDateEnd(dayjs(e.nanoseconds));
     }
     const uploadHandler = (e) => {
         if (e.target.files && e.target.files.length) {
@@ -99,9 +96,12 @@ export const Task = memo((props) => {
         <div>
             <EditableSpan value={description} onChange={descriptionChangeHandler}/>
         </div>
-        <div>
-            <a href={fileUrl}>Скачать на файл</a>
-        </div>
+        {
+            !isEmpty(fileUrl) &&
+            <div>
+                <a href={fileUrl}>Скачать на файл</a>
+            </div>
+        }
         <label>
             <input
                 type="file"
