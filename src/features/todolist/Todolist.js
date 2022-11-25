@@ -54,7 +54,12 @@ export const Todolist = () => {
             <Grid container spacing={3}>
                 {
                     tasks.map(t => {
-                        console.log(t)
+                        let dateEnd = null;
+                        if(!t.dateEnd){
+                            dateEnd = (new Date).toISOString()
+                        }else{
+                            dateEnd = t.dateEnd
+                        }
 
                         return <Grid item key={t.taskId}>
                             <Paper style={{padding: '10px'}}>
@@ -64,7 +69,7 @@ export const Todolist = () => {
                                     description={t.description}
                                     status={t.status}
                                     fileName={t.fileName}
-                                    dateEnd={t.dateEnd}
+                                    dateEnd={dateEnd}
                                     removeTask={deleteTask}
                                 />
                             </Paper>
