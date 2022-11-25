@@ -1,6 +1,6 @@
 import React, {createContext} from 'react';
 import { render } from 'react-dom';
-import './index.css';
+import './index.module.css';
 import 'firebase/firestore'
 import 'firebase/auth'
 import 'firebase/storage'

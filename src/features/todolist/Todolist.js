@@ -11,6 +11,7 @@ import {PATH} from "../../components/AppRouter";
 import {Loading} from "../../components/Loading";
 import {v1} from "uuid";
 import firebase from "firebase";
+import styles from './Todolist.module.css'
 
 export const Todolist = () => {
     const navigate = useNavigate()
@@ -41,13 +42,12 @@ export const Todolist = () => {
     if (loading) {
         return <Loading/>
     }
-
     if (user==null) {
         navigate(PATH.LOGIN)
     }
 
     return (
-        <>
+        <div className={styles.todolistBlock}>
             <Grid container style={{padding: '20px'}}>
                 <AddItemForm addItem={addTask} disabled={loading}/>
             </Grid>
@@ -77,6 +77,6 @@ export const Todolist = () => {
                     })
                 }
             </Grid>
-        </>
+        </div>
     )
 }

@@ -13,14 +13,14 @@ export const Navbar = () => {
     const [user] = useAuthState(auth)
 
     return (
-        <AppBar color={"secondary"} position="static">
-            <Toolbar variant={"dense"}>
+        <AppBar color={"primary"} position="static">
+            <Toolbar variant={"regular"}>
                 <Grid container justify={"flex-end"}>
                     {user ?
-                        <Button onClick={() => auth.signOut()} variant={"outlined"}>Выйти</Button>
+                        <Button onClick={() => auth.signOut()} variant={"contained"} color={'info'}>Выйти</Button>
                         :
-                        <NavLink to={PATH.LOGIN}>
-                            <Button variant={"outlined"}>Логин</Button>
+                        <NavLink to={PATH.LOGIN} style={{textDecoration: 'none'}}>
+                            <Button variant={"contained"} color={'info'}>Логин</Button>
                         </NavLink>
                     }
                 </Grid>

@@ -5,6 +5,7 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {Loading} from "../components/Loading";
 import {Context} from "../index";
 import {AppRouter} from "../components/AppRouter";
+import styles from './App.module.css'
 
 export const App = () => {
     const {auth} = useContext(Context)
@@ -16,8 +17,10 @@ export const App = () => {
 
     return (
         <BrowserRouter>
-            <Navbar/>
-            <AppRouter/>
+            <div className={styles.appBlock}>
+                <Navbar/>
+                <AppRouter/>
+            </div>
         </BrowserRouter>
     );
 }
