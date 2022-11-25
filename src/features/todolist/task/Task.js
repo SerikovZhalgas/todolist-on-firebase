@@ -19,7 +19,7 @@ export const Task = memo((props) => {
     const [title, setTitle] = useState(props.title)
     const [description, setDescription] = useState(props.description)
     const [status, setStatus] = useState(props.status)
-    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd.nanoseconds))
+    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd))
     const [fileUrl, setFileUrl] = useState('')
 
     useEffect(() => {
@@ -54,10 +54,11 @@ export const Task = memo((props) => {
         setStatus(e.currentTarget.checked)
     }
     const dateChangeHandler = (e) => {
+        const newDate = e.$d.toISOString()
         db.doc(`todolists/${props.id}`).update({
-            dateEnd: e
+            dateEnd: newDate
         })
-        setDateEnd(dayjs(e.nanoseconds));
+        setDateEnd(dayjs(newDate));
     }
     const uploadHandler = (e) => {
         if (e.target.files && e.target.files.length) {
