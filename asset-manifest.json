@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/todolist-on-firebase/static/css/main.30f03e61.css",
+    "main.js": "/todolist-on-firebase/static/js/main.977fc225.js",
+    "index.html": "/todolist-on-firebase/index.html",
+    "main.30f03e61.css.map": "/todolist-on-firebase/static/css/main.30f03e61.css.map",
+    "main.977fc225.js.map": "/todolist-on-firebase/static/js/main.977fc225.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.30f03e61.css",
+    "static/js/main.977fc225.js"
+  ]
+}
