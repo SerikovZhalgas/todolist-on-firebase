@@ -5,7 +5,7 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {Loading} from "../components/Loading";
 import {Context} from "../index";
 import {AppRouter} from "../components/AppRouter";
-import styles from './App.module.css'
+import styles from './App.module.scss'
 
 export const App = () => {
     const {auth} = useContext(Context)

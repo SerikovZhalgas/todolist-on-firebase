@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import {useNavigate} from "react-router-dom";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {PATH} from "../../components/AppRouter";
-import styles from './Login.module.css'
+import styles from './Login.module.scss'
 
 export const Login = () => {
     const {auth} = useContext(Context)

@@ -1,0 +1,17 @@
+.taskBlock{
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .titleBlock{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  .endText{
+    color: red;
+  }
+}
+.taskDone{
+  opacity: 50%;
+}

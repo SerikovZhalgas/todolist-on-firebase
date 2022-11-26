@@ -11,7 +11,8 @@ import {PATH} from "../../components/AppRouter";
 import {Loading} from "../../components/Loading";
 import {v1} from "uuid";
 import firebase from "firebase";
-import styles from './Todolist.module.css'
+import styles from './Todolist.module.scss'
+import dayjs from "dayjs";
 
 export const Todolist = () => {
     const navigate = useNavigate()
@@ -28,9 +29,9 @@ export const Todolist = () => {
             userId: user.uid,
             taskId,
             title,
-            description: "",
+            description: 'Напиши меня',
             status: false,
-            dateEnd: "",
+            dateEnd: dayjs().add(1, 'day').format(),
             fileName: '',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
@@ -48,13 +49,13 @@ export const Todolist = () => {
 
     return (
         <div className={styles.todolistBlock}>
-            <Grid container style={{padding: '20px'}}>
+            <Grid container>
                 <AddItemForm addItem={addTask} disabled={loading}/>
             </Grid>
             <Grid container spacing={3}>
                 {
                     tasks.map(t => {
-                        let dateEnd = null;
+                        let dateEnd;
                         if(!t.dateEnd){
                             dateEnd = (new Date).toISOString()
                         }else{
@@ -62,7 +63,7 @@ export const Todolist = () => {
                         }
 
                         return <Grid item key={t.taskId}>
-                            <Paper style={{padding: '10px'}}>
+                            <Paper style={{padding: '10px'}} variant={'outlined'}>
                                 <Task
                                     id={t.taskId}
                                     title={t.title}
