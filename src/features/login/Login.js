@@ -7,6 +7,12 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {PATH} from "../../components/AppRouter";
 import styles from './Login.module.scss'
 
+/**
+ * Компонента возвращает страницу логинизации с коллбэк функцией обращения на сервис логинизации через Google аккаунт№
+ * Заранее подключено в проекте Firebase.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const Login = () => {
     const {auth} = useContext(Context)
     const [user] = useAuthState(auth)

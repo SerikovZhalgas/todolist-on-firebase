@@ -8,6 +8,12 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import {PATH} from "./AppRouter";
 
+/**
+ * Комонента возвращает навигационную панель с разными кнопками в зависимости от авторизации пользователя
+ *
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const Navbar = () => {
     const {auth} = useContext(Context)
     const [user] = useAuthState(auth)

@@ -1,5 +1,5 @@
 import {useAuthState} from "react-firebase-hooks/auth";
-import {useContext} from "react";
+import {useCallback, useContext} from "react";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {AddItemForm} from "../../components/AddItemForm";
 import {Task} from "./task/Task";
@@ -14,6 +14,12 @@ import firebase from "firebase";
 import styles from './Todolist.module.scss'
 import dayjs from "dayjs";
 
+/**
+ * Компонента достает из контекста firestore storage в виде переменной db и обращаюясь к коллекции достает таски, паралельно сортирую по дате создания.
+ * Также перенаправляет не залогининого Пользователя на страницу логинизации.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const Todolist = () => {
     const navigate = useNavigate()
     const {auth, db} = useContext(Context)
@@ -22,8 +28,12 @@ export const Todolist = () => {
     const [tasks, loading] = useCollectionData(
         todolistsRef.orderBy('createdAt')
     )
-
-    const addTask = async (title) => {
+    /**
+     * Функция создает новую задачу принимая заголовок и помещая некоторые начальные данные в стандартные поля:
+     * id пользователя, id задачи, заголовок, описание, статус, дата завершения, имя файла, дата создания.
+     * @param title Заголовок
+     */
+    const addTask = (title) => {
         const taskId=v1();
         todolistsRef.doc(taskId).set({
             userId: user.uid,
@@ -36,7 +46,11 @@ export const Todolist = () => {
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
     }
-    const deleteTask = async (id) => {
+    /**
+     * Функция удаления задачи
+     * @param id Индектификатор задачи
+     */
+    const deleteTask = (id) => {
         db.doc(`todolists/${id}`).delete()
     }
 
@@ -55,22 +69,15 @@ export const Todolist = () => {
             <Grid container spacing={3}>
                 {
                     tasks.map(t => {
-                        let dateEnd;
-                        if(!t.dateEnd){
-                            dateEnd = (new Date).toISOString()
-                        }else{
-                            dateEnd = t.dateEnd
-                        }
-
                         return <Grid item key={t.taskId}>
                             <Paper style={{padding: '10px'}} variant={'outlined'}>
                                 <Task
-                                    id={t.taskId}
-                                    title={t.title}
-                                    description={t.description}
-                                    status={t.status}
-                                    fileName={t.fileName}
-                                    dateEnd={dateEnd}
+                                    taskId={t.taskId}
+                                    taskTitle={t.title}
+                                    taskDescription={t.description}
+                                    taskStatus={t.status}
+                                    taskFileName={t.fileName}
+                                    taskDateEnd={t.dateEnd}
                                     removeTask={deleteTask}
                                 />
                             </Paper>

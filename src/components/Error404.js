@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Test() {
+export const Error404 = () => {
     return (
         <div>
             <div> Error 404</div>
@@ -9,5 +9,3 @@ function Test() {
         </div>
     );
 }
-
-export default Test;

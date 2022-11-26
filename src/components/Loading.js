@@ -1,6 +1,11 @@
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
+/**
+ * Компонента загрузки
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const Loading = () => {
     return (
         <Container>

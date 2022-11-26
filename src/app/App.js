@@ -1,4 +1,4 @@
-import {BrowserRouter} from "react-router-dom";
+import {HashRouter} from "react-router-dom";
 import {Navbar} from "../components/Navbar";
 import {useContext} from "react";
 import {useAuthState} from "react-firebase-hooks/auth";
@@ -7,6 +7,11 @@ import {Context} from "../index";
 import {AppRouter} from "../components/AppRouter";
 import styles from './App.module.scss'
 
+/**
+ * Компонента возвраащает навигационную панель и страницу Роутинга.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const App = () => {
     const {auth} = useContext(Context)
     const [user, loading, error] = useAuthState(auth)
@@ -16,11 +21,11 @@ export const App = () => {
     }
 
     return (
-        <BrowserRouter>
+        <HashRouter>
             <div className={styles.appBlock}>
                 <Navbar/>
                 <AppRouter/>
             </div>
-        </BrowserRouter>
+        </HashRouter>
     );
 }

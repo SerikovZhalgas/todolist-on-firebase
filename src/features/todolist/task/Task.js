@@ -14,82 +14,139 @@ import {CloudUpload} from "@mui/icons-material";
 import {isEmpty, storageErrors} from "../../../utils/functions";
 import styles from './Task.module.scss'
 
-export const Task = memo((props) => {
+/**
+ * Компонента реализует отображение, обновление данных. Также подключена обертывающая копмонента высшего порядка "memo", которая следит за входящими данными и предотвращает лишний ререндер компоненты.
+ * @type {React.NamedExoticComponent<{readonly taskFileName?: *, readonly removeTask?: *, readonly taskDescription?: *, readonly taskDateEnd?: *, readonly taskTitle?: *, readonly taskId?: *, readonly taskStatus?: *}>}
+ */
+export const Task = memo(({taskId, taskTitle, taskDescription, taskStatus, taskFileName, taskDateEnd, removeTask}) => {
     const {db, storage} = useContext(Context)
     const storageRef = storage.ref()
-    const [title, setTitle] = useState(props.title)
-    const [description, setDescription] = useState(props.description)
-    const [status, setStatus] = useState(props.status)
-    const [dateEnd, setDateEnd] = useState(dayjs(props.dateEnd))
+    const [title, setTitle] = useState(taskTitle)
+    const [description, setDescription] = useState(taskDescription)
+    const [status, setStatus] = useState(taskStatus)
+    const [dateEnd, setDateEnd] = useState(dayjs(taskDateEnd))
     const [fileUrl, setFileUrl] = useState('')
     const [endText, setEndText] = useState('')
-
+    /**
+     * useEffect асинронно выполняет коллбэк функцию при вмонтировании компоненты и далее только при изменении переменных переданных в массив зависимостей.
+     */
     useEffect(() => {
-        storageRef.child(`files/${props.fileName}`).getDownloadURL()
+        /**
+         * Передает в хук useState ссылку на файл конкретной задачи.
+         */
+        storageRef.child(`files/${taskFileName}`).getDownloadURL()
             .then((url) => {
                 setFileUrl(url)
             })
             .catch((error) => {
                 storageErrors(error)
             });
+        /**
+         * Проверка на выполнение задания в установленный срок.
+         */
         if(dayjs().format('DD-MM-YY') >= dateEnd.format('DD-MM-YY')){
             statusChangeHandler(true)
             setEndText('Истек срок выполнения :(')
         }
-    }, [props.fileName])
-
-    const deleteClickHandler = () => props.removeTask(props.id)
-    const titleChangeHandler = (newTitle) => {
-        db.doc(`todolists/${props.id}`).update({
-            title: newTitle
-        }).then(() => {
-            console.log("Doc did updated")
-        })
-        setTitle(newTitle)
+    }, [taskFileName])
+    /**
+     * Функция по удалению задачи, передает идентификатор задачи в коллбэк функцию removeTask
+     * @returns {*}
+     */
+    const deleteClickHandler = () => removeTask(taskId)
+    /**
+     * Асинхронная функция обновляет заголовок задачи
+     * @param newTitle Новый заголовок
+     */
+    const titleChangeHandler = async (newTitle) => {
+        try {
+            await db.doc(`todolists/${taskId}`).update({
+                title: newTitle
+            }).then(() => {
+                console.log("Doc did updated")
+            })
+            setTitle(newTitle)
+        }catch (e) {
+            console.log(e)
+        }
     }
-    const descriptionChangeHandler = (newDescription) => {
-        db.doc(`todolists/${props.id}`).update({
-            description: newDescription
-        })
-        setDescription(newDescription)
+    /**
+     * Асинхронная функция обновляет описание задачи
+     * @param newDescription Новое описание
+     */
+    const descriptionChangeHandler = async (newDescription) => {
+        try {
+            await db.doc(`todolists/${taskId}`).update({
+                description: newDescription
+            })
+            setDescription(newDescription)
+        }catch (e) {
+            console.log(e)
+        }
     }
-    const statusChangeHandler = (newStatus) => {
-        db.doc(`todolists/${props.id}`).update({
-            status: newStatus
-        })
-        setStatus(newStatus)
-        setEndText('')
+    /**
+     * Асинхронная функция обновляет статус задачи (чекбокс)
+     * @param newStatus Новый статус
+     */
+    const statusChangeHandler = async (newStatus) => {
+        try {
+            await db.doc(`todolists/${taskId}`).update({
+                status: newStatus
+            })
+            setStatus(newStatus)
+            setEndText('')
+        }catch (e) {
+            console.log(e)
+        }
     }
-    const dateChangeHandler = (e) => {
-        const newDate = e.$d.toISOString()
-        db.doc(`todolists/${props.id}`).update({
-            dateEnd: newDate
-        })
-        setDateEnd(dayjs(newDate));
-        setEndText('')
+    /**
+     * Асинхронная функция обновляет дату завершения задачи. Преобразуем входящее событие, доставая значение ключа $d формата utс.
+     * @param e Объект события
+     */
+    const dateChangeHandler = async (e) => {
+        try {
+            const newDate = e.$d.toISOString()
+            await db.doc(`todolists/${taskId}`).update({
+                dateEnd: newDate
+            })
+            setDateEnd(dayjs(newDate));
+            setEndText('')
+        }catch (e) {
+            console.log(e)
+        }
     }
-    const uploadHandler = (e) => {
+    /**
+     * Асинхронная функция обновляет название файла задачи и выгружает в Storage новый прикрепленный файл.
+     * @param e Объект события
+     */
+    const uploadHandler = async (e) => {
         if (e.target.files && e.target.files.length) {
             const file = e.target.files[0]
-            console.log('file: ', file)
-            const newFileRef = storageRef.child(`files/${file.name}`)
-            newFileRef.putString(file).then(() => {
-                console.log('Uploaded!');
-            });
-            db.doc(`todolists/${props.id}`).update({
-                fileName: file.name
-            })
-            storageRef.child(`files/${file.name}`).getDownloadURL()
-                .then((url) => {
-                    setFileUrl(url)
-                })
-                .catch((error) => {
-                    storageErrors(error)
+            try {
+                /**
+                 * сначала создается ссылка/путь на будущий файл, затем выгружается файл по ссылке
+                 */
+                const newFileRef = storageRef.child(`files/${file.name}`)
+                await newFileRef.putString(file).then(() => {
+                    console.log('Uploaded!');
                 });
+                await db.doc(`todolists/${taskId}`).update({
+                    fileName: file.name
+                })
+                await storageRef.child(`files/${file.name}`).getDownloadURL()
+                    .then((url) => {
+                        setFileUrl(url)
+                    })
+                    .catch((error) => {
+                        storageErrors(error)
+                    });
+            }catch (e) {
+                console.log(e)
+            }
         }
     }
 
-    return <div key={props.taskId} className={`${styles.taskBlock} ${status ? styles.taskDone : ''}`}>
+    return <div key={taskId} className={`${styles.taskBlock} ${status ? styles.taskDone : ''}`}>
         <div className={styles.titleBlock}>
             <Checkbox
                 checked={status}
@@ -114,7 +171,7 @@ export const Task = memo((props) => {
             !isEmpty(fileUrl) &&
             <div>
                 <span>Ссылка на файл: </span>
-                <a href={fileUrl}>{props.fileName}</a>
+                <a href={fileUrl}>{taskFileName}</a>
             </div>
         }
         <label>
