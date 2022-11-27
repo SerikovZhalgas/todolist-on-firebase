@@ -7,11 +7,9 @@ import 'firebase/storage'
 import firebase from "firebase";
 import {App} from "./app/App";
 
-/**
- * Инициализация firebase проекта.
- * Подключение авторизации, Firestore Database и Storage.
- * Создается контекст и передаются необходимые переменные-ссылки.
- */
+// Инициализация firebase проекта.
+// Подключение авторизации, Firestore Database и Storage.
+// Создается контекст и передаются необходимые переменные-ссылки.
 firebase.initializeApp(
     {
         apiKey: "AIzaSyCq397RPkCQg6aChbAsEREl9h84P1_43hw",
@@ -24,7 +22,6 @@ firebase.initializeApp(
 );
 
 export const Context = createContext(null)
-
 const auth = firebase.auth()
 const db = firebase.firestore()
 const storage = firebase.storage()

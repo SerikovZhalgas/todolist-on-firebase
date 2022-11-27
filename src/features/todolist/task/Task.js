@@ -27,13 +27,10 @@ export const Task = memo(({taskId, taskTitle, taskDescription, taskStatus, taskF
     const [dateEnd, setDateEnd] = useState(dayjs(taskDateEnd))
     const [fileUrl, setFileUrl] = useState('')
     const [endText, setEndText] = useState('')
-    /**
-     * useEffect асинронно выполняет коллбэк функцию при вмонтировании компоненты и далее только при изменении переменных переданных в массив зависимостей.
-     */
+
+    //useEffect асинхронно выполняет коллбэк функцию при вмонтировании компоненты и далее только при изменении переменных переданных в массив зависимостей.
     useEffect(() => {
-        /**
-         * Передает в хук useState ссылку на файл конкретной задачи.
-         */
+         //Передает в хук useState ссылку на файл конкретной задачи.
         storageRef.child(`files/${taskFileName}`).getDownloadURL()
             .then((url) => {
                 setFileUrl(url)
@@ -41,9 +38,7 @@ export const Task = memo(({taskId, taskTitle, taskDescription, taskStatus, taskF
             .catch((error) => {
                 storageErrors(error)
             });
-        /**
-         * Проверка на выполнение задания в установленный срок.
-         */
+        //Проверка на выполнение задания в установленный срок.
         if(dayjs().format('DD-MM-YY') >= dateEnd.format('DD-MM-YY')){
             statusChangeHandler(true)
             setEndText('Истек срок выполнения :(')
@@ -123,9 +118,7 @@ export const Task = memo(({taskId, taskTitle, taskDescription, taskStatus, taskF
         if (e.target.files && e.target.files.length) {
             const file = e.target.files[0]
             try {
-                /**
-                 * сначала создается ссылка/путь на будущий файл, затем выгружается файл по ссылке
-                 */
+                //сначала создается ссылка/путь на будущий файл, затем выгружается файл по ссылке
                 const newFileRef = storageRef.child(`files/${file.name}`)
                 await newFileRef.putString(file).then(() => {
                     console.log('Uploaded!');

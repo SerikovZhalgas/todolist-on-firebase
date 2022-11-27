@@ -8,8 +8,7 @@ import {PATH} from "../../components/AppRouter";
 import styles from './Login.module.scss'
 
 /**
- * Компонента возвращает страницу логинизации с коллбэк функцией обращения на сервис логинизации через Google аккаунт№
- * Заранее подключено в проекте Firebase.
+ * Компонента возвращает страницу логинизации.
  * @returns {JSX.Element}
  * @constructor
  */
@@ -17,13 +16,16 @@ export const Login = () => {
     const {auth} = useContext(Context)
     const [user] = useAuthState(auth)
     const navigate = useNavigate()
-
+    /**
+     * Коллбэк функция обращения на сервис логинизации через Google аккаунт. Заранее подключено в консоли Firebase.
+     * @returns {Promise<void>}
+     */
     const login = async () => {
         const provider = new firebase.auth.GoogleAuthProvider()
         const {user} = await auth.signInWithPopup(provider)
-        console.log(user)
     }
 
+    //Условие перенаправления залогининого Пользователя на страницу Todolist.
     if (user !== null) {
         navigate(PATH.TODOLIST)
     }

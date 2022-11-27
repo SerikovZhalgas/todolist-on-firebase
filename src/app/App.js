@@ -16,6 +16,7 @@ export const App = () => {
     const {auth} = useContext(Context)
     const [user, loading, error] = useAuthState(auth)
 
+    //Перенаправление на страницу загрузки при авторизации пользователя
     if (loading) {
         return <Loading/>
     }
